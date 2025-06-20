@@ -7,6 +7,8 @@ from google.cloud import firestore
 from dotenv import load_dotenv
 from datetime import datetime
 import re
+from flask import jsonify
+
 
 app = Flask(__name__)
 load_dotenv()
@@ -46,7 +48,6 @@ def extract_expiry_date(text):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload():
-    message = None
     if request.method == 'POST':
         image = request.files['image']
         owner_email = request.form['email']
@@ -60,10 +61,9 @@ def upload():
 
         expiry_date = extract_expiry_date(text)
         if not expiry_date:
-            message = "❌ Expiry date not found in the image."
-            return render_template('upload.html', message=message)
+            return jsonify({'success': False, 'message': '❌ Expiry date not found in the image.'})
 
-        # Store in Firestore with ready_to_notify = True
+        # Store in Firestore
         db.collection('food_items').add({
             'email': owner_email,
             'expiry_date': expiry_date,
@@ -71,13 +71,19 @@ def upload():
             'notified': False,
             'donated': False,
             'ready_to_notify': True,
-            'time': expiry_date.strftime('%I:%M %p'),  # optional: add time for emails
+            'time': expiry_date.strftime('%I:%M %p'),
             'name': "FoodBridge"
         })
 
-        message = f"✅ Uploaded successfully! Expiry Date: {expiry_date.strftime('%d-%m-%Y')}"
         print("✅ Data stored in Firestore")
 
+        return jsonify({
+            'success': True,
+            'email': owner_email,
+            'expiry_date': expiry_date.strftime('%d-%m-%Y')
+        })
+
+    # GET request – render the page normally
     return render_template('upload.html',
         FIREBASE_API_KEY=os.getenv('FIREBASE_API_KEY'),
         FIREBASE_AUTH_DOMAIN=os.getenv('FIREBASE_AUTH_DOMAIN'),
