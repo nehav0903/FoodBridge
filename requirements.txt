@@ -1,0 +1,10 @@
+flask
+google-cloud-vision
+google-cloud-firestore
+googlemaps
+firebase-admin
+python-dotenv
+schedule
+requests
+gunicorn
+google-auth
