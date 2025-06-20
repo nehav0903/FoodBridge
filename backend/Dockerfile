@@ -1,25 +1,18 @@
-# Use official Python slim image
+# Use official Python image
 FROM python:3.10-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Set work directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Install pip & system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy all code
+# Copy contents of the backend folder into the container
 COPY . .
 
-# Allow CMD override for either main or expiry job
+# Install dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Expose the port (only needed for web service)
+EXPOSE 5000
+
+# Default command (change in Railway UI for the background job)
 CMD ["python", "main.py"]
