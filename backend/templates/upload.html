@@ -740,7 +740,7 @@
         formData.append('image', file);
 
         try {
-            const response = await fetch('/', {
+            const response = await fetch('https://foodbridge-production.up.railway.app/', {
                 method: 'POST',
                 body: formData
             });
