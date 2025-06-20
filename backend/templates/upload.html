@@ -757,11 +757,12 @@
                 };
 
                 emailjs.send("{{EMAILJS_SERVICE_ID}}", "{{EMAILJS_TEMPLATE_ID}}", templateParams)
-                    .then(() => alert("✅ Email sent successfully!"))
+                    // ✅ Removed success popup
                     .catch((error) => {
                         console.error("❌ Email send failed:", error);
                         alert("❌ Failed to send email");
                     });
+
 
                 document.getElementById('uploadForm').reset();
                 document.querySelector('.file-upload-label').innerHTML = "";
@@ -799,14 +800,13 @@
 
                     emailjs.send("{{EMAILJS_SERVICE_ID}}", "{{EMAILJS_TEMPLATE_ID}}", templateParams)
                         .then(() => {
-                            console.log("✅ Email sent to:", data.email);
-                            document.getElementById("status").innerText = "✅ Email notification sent!";
+                            //console.log("✅ Email sent to:", data.email);
                             // Optional: mark as notified to prevent re-sending
                             doc.ref.update({ ready_to_notify: false });
                         })
                         .catch((error) => {
-                            console.error("❌ Failed to send email:", error);
-                            document.getElementById("status").innerText = "❌ Failed to send notification.";
+                            //console.error("❌ Failed to send email:", error);
+                            //document.getElementById("status").innerText = "❌ Failed to send notification.";
                         });
                 });
             })
